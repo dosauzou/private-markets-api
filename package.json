@@ -9,7 +9,7 @@
     "db:generate": "prisma generate",
     "db:studio": "prisma studio",
     "db:seed": "prisma db seed",
-    "test": "jest"
+    "test": "jest --runInBand"
   },
   "prisma": {
     "seed": "ts-node --transpile-only prisma/seed.ts"
