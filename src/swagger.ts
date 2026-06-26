@@ -9,6 +9,7 @@ export const swaggerDocument = {
   tags: [
     { name: 'Health', description: 'Health check' },
     { name: 'Funds', description: 'Fund management operations' },
+    { name: 'Investors', description: 'Investor management operations' },
   ],
   paths: {
     '/api/health': {
@@ -162,6 +163,61 @@ export const swaggerDocument = {
         },
       },
     },
+    '/investors': {
+      get: {
+        summary: 'List all investors',
+        tags: ['Investors'],
+        responses: {
+          200: {
+            description: 'List of investors',
+            content: {
+              'application/json': {
+                schema: {
+                  type: 'object',
+                  properties: {
+                    success: { type: 'boolean', example: true },
+                    data: {
+                      type: 'array',
+                      items: { '$ref': '#/components/schemas/Investor' },
+                    },
+                  },
+                },
+              },
+            },
+          },
+        },
+      },
+      post: {
+        summary: 'Create a new investor',
+        tags: ['Investors'],
+        requestBody: {
+          required: true,
+          content: {
+            'application/json': {
+              schema: { '$ref': '#/components/schemas/CreateInvestor' },
+            },
+          },
+        },
+        responses: {
+          201: {
+            description: 'Investor created',
+            content: {
+              'application/json': {
+                schema: {
+                  type: 'object',
+                  properties: {
+                    success: { type: 'boolean', example: true },
+                    data: { '$ref': '#/components/schemas/Investor' },
+                  },
+                },
+              },
+            },
+          },
+          400: { description: 'Invalid input' },
+          409: { description: 'Investor with this email already exists' },
+        },
+      },
+    },
   },
   components: {
     schemas: {
@@ -193,6 +249,25 @@ export const swaggerDocument = {
           vintage_year: { type: 'integer', example: 2024 },
           target_size_usd: { type: 'number', example: 300000000.00 },
           status: { type: 'string', enum: ['Fundraising', 'Investing', 'Closed'], example: 'Investing' },
+        },
+      },
+      Investor: {
+        type: 'object',
+        properties: {
+          id: { type: 'string', format: 'uuid', example: '770e8400-e29b-41d4-a716-446655440002' },
+          name: { type: 'string', example: 'Goldman Sachs Asset Management' },
+          email: { type: 'string', format: 'email', example: 'investments@gsam.com' },
+          investor_type: { type: 'string', enum: ['Individual', 'Institution', 'FamilyOffice'], example: 'Institution' },
+          created_at: { type: 'string', format: 'date-time', example: '2024-02-10T09:15:00Z' },
+        },
+      },
+      CreateInvestor: {
+        type: 'object',
+        required: ['name', 'email', 'investor_type'],
+        properties: {
+          name: { type: 'string', example: 'CalPERS' },
+          email: { type: 'string', format: 'email', example: 'privateequity@calpers.ca.gov' },
+          investor_type: { type: 'string', enum: ['Individual', 'Institution', 'FamilyOffice'], example: 'Institution' },
         },
       },
     },
