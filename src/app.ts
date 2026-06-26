@@ -5,6 +5,7 @@ import { requestLogger } from './shared/middleware/logger'
 import { errorHandler } from './shared/middleware/error'
 import { swaggerDocument } from './swagger'
 import healthRoutes from './modules/health/health.routes'
+import fundRoutes from './modules/funds/fund.routes'
 
 const app = express()
 
@@ -13,6 +14,7 @@ app.use(requestLogger)
 
 app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument))
 app.use('/api/health', healthRoutes)
+app.use('/funds', fundRoutes)
 
 app.use(errorHandler)
 
