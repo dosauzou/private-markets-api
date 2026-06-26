@@ -1,4 +1,4 @@
-import { describe, it, expect, beforeEach, afterAll } from '@jest/globals'
+import { describe, it, expect, beforeAll, afterEach, afterAll } from '@jest/globals'
 import request from 'supertest'
 import app from '../src/app'
 import { prisma } from '../src/shared/prisma.client'
@@ -6,12 +6,11 @@ import { prisma } from '../src/shared/prisma.client'
 let fundId: string
 let investorId: string
 
-beforeEach(async () => {
+beforeAll(async () => {
   await prisma.investment.deleteMany()
   await prisma.fund.deleteMany()
   await prisma.investor.deleteMany()
 
-  // Create a fund for testing
   const fundRes = await request(app).post('/funds').send({
     name: 'Test Fund',
     vintage_year: 2024,
@@ -19,7 +18,6 @@ beforeEach(async () => {
   })
   fundId = fundRes.body.data.id
 
-  // Create an investor for testing
   const investorRes = await request(app).post('/investors').send({
     name: 'Test Investor',
     email: 'test@investor.com',
@@ -28,8 +26,11 @@ beforeEach(async () => {
   investorId = investorRes.body.data.id
 })
 
-afterAll(async () => {
+afterEach(async () => {
   await prisma.investment.deleteMany()
+})
+
+afterAll(async () => {
   await prisma.fund.deleteMany()
   await prisma.investor.deleteMany()
   await prisma.$disconnect()
@@ -47,7 +48,7 @@ describe('POST /funds/:fund_id/investments', () => {
 
     expect(res.status).toBe(201)
     expect(res.body.success).toBe(true)
-    expect(res.body.data.amount_usd).toBe('10000000')
+    expect(res.body.data.amount_usd).toBe(10000000)
     expect(res.body.data.investor_id).toBe(investorId)
     expect(res.body.data.fund_id).toBe(fundId)
   })
@@ -178,7 +179,7 @@ describe('GET /funds/:fund_id/investments', () => {
     expect(res.status).toBe(200)
     expect(res.body.success).toBe(true)
     expect(res.body.data.length).toBe(1)
-    expect(res.body.data[0].amount_usd).toBe('10000000')
+    expect(res.body.data[0].amount_usd).toBe(10000000)
   })
 
   it('returns 404 if fund does not exist', async () => {
