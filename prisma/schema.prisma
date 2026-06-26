@@ -27,7 +27,7 @@ model Fund {
   status          FundStatus @default(Fundraising)
   created_at      DateTime   @default(now())
 
-  investments     Investment[]
+  investments Investment[]
 }
 
 model Investor {
@@ -37,7 +37,7 @@ model Investor {
   investor_type InvestorType
   created_at    DateTime     @default(now())
 
-  investments   Investment[]
+  investments Investment[]
 }
 
 model Investment {
@@ -48,8 +48,8 @@ model Investment {
   investment_date DateTime @db.Date
   created_at      DateTime @default(now())
 
-  fund            Fund     @relation(fields: [fund_id], references: [id], onDelete: Restrict)
-  investor        Investor @relation(fields: [investor_id], references: [id], onDelete: Restrict)
+  fund     Fund     @relation(fields: [fund_id], references: [id], onDelete: Restrict)
+  investor Investor @relation(fields: [investor_id], references: [id], onDelete: Restrict)
 
   @@unique([fund_id, investor_id])
 }

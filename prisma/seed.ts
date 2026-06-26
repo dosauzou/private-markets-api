@@ -2,26 +2,28 @@ import { PrismaClient, Prisma } from '@prisma/client'
 
 const prisma = new PrismaClient()
 
-async function getOrCreateFund(name: string, data: Omit<Prisma.FundCreateInput, 'name'>) {
-  const existing = await prisma.fund.findFirst({ where: { name } })
-  if (existing) return existing
-  return prisma.fund.create({ data: { name, ...data } })
+async function getOrCreateFund(id: string, name: string, data: Omit<Prisma.FundCreateInput, 'name' | 'id'>) {
+  return prisma.fund.upsert({
+    where: { id },
+    update: {},
+    create: { id, name, ...data },
+  })
 }
 
 async function main() {
-  const alphaGrowthFund = await getOrCreateFund('Alpha Growth Fund', {
+  const alphaGrowthFund = await getOrCreateFund('0c5b2cb7-8a22-4cfc-a5a1-45d2d0037d63', 'Alpha Growth Fund', {
     vintage_year: 2023,
     target_size_usd: new Prisma.Decimal('15000000.00'),
     status: 'Investing',
   })
 
-  const horizonValuePartners = await getOrCreateFund('Horizon Value Partners', {
+  const horizonValuePartners = await getOrCreateFund('6e5429fa-ae62-4961-9d73-2c8f8b4d8b2e', 'Horizon Value Partners', {
     vintage_year: 2025,
     target_size_usd: new Prisma.Decimal('25000000.00'),
     status: 'Fundraising',
   })
 
-  const evergreenOpportunities = await getOrCreateFund('Evergreen Opportunities', {
+  const evergreenOpportunities = await getOrCreateFund('b1f5d6ae-9c5f-4a0d-bb44-56f4c3c912de', 'Evergreen Opportunities', {
     vintage_year: 2021,
     target_size_usd: new Prisma.Decimal('8000000.00'),
     status: 'Closed',
