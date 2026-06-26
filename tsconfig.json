@@ -12,6 +12,7 @@
     "declaration": true,
     "baseUrl": ".",
     "ignoreDeprecations": "5.0",
+    "types": ["jest", "node"],
     "paths": {
       "@shared/*": ["src/shared/*"],
       "@modules/*": ["src/modules/*"]
