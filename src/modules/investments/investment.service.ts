@@ -7,10 +7,12 @@ export class InvestmentService {
     const fund = await prisma.fund.findUnique({ where: { id: fund_id } })
     if (!fund) throw new AppError(`Fund ${fund_id} not found`, 404)
 
-    return prisma.investment.findMany({
+    const investments = await prisma.investment.findMany({
       where: { fund_id },
       orderBy: { created_at: 'desc' },
     })
+
+    return investments.map(i => ({ ...i, amount_usd: Number(i.amount_usd) }))
   }
 
   async create(fund_id: string, dto: CreateInvestmentDto) {
@@ -25,7 +27,7 @@ export class InvestmentService {
     })
     if (existing) throw new AppError('This investor has already committed to this fund', 409)
 
-    return prisma.investment.create({
+    const investment = await prisma.investment.create({
       data: {
         fund_id,
         investor_id: dto.investor_id,
@@ -33,5 +35,7 @@ export class InvestmentService {
         investment_date: new Date(dto.investment_date),
       },
     })
+
+    return { ...investment, amount_usd: Number(investment.amount_usd) }
   }
 }

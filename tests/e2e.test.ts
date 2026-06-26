@@ -55,7 +55,7 @@ describe('End-to-end investment flow', () => {
     expect(investmentRes.status).toBe(201)
     expect(investmentRes.body.data.fund_id).toBe(createdFundId)
     expect(investmentRes.body.data.investor_id).toBe(createdInvestorId)
-    expect(investmentRes.body.data.amount_usd).toBe('50000000')
+    expect(investmentRes.body.data.amount_usd).toBe(50000000)
 
     // Step 4: Retrieve the investment
     const getRes = await request(app).get(`/funds/${createdFundId}/investments`)
@@ -64,6 +64,6 @@ describe('End-to-end investment flow', () => {
     expect(getRes.body.data).toHaveLength(1)
     expect(getRes.body.data[0].fund_id).toBe(createdFundId)
     expect(getRes.body.data[0].investor_id).toBe(createdInvestorId)
-    expect(getRes.body.data[0].amount_usd).toBe('50000000')
+    expect(getRes.body.data[0].amount_usd).toBe(50000000)
   })
 })
