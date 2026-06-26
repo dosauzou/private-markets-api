@@ -7,16 +7,12 @@ beforeEach(async () => {
   await prisma.investment.deleteMany()
   await prisma.investor.deleteMany()
   await prisma.fund.deleteMany()
-  
-  await new Promise(resolve => setTimeout(resolve, 20))
 })
 
 afterAll(async () => {
   await prisma.investment.deleteMany()
   await prisma.investor.deleteMany()
   await prisma.fund.deleteMany()
-  
-  await new Promise(resolve => setTimeout(resolve, 10))
   await prisma.$disconnect()
 })
 
