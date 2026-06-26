@@ -1,6 +1,7 @@
 import { prisma } from '../../shared/prisma.client'
 import { AppError } from '../../shared/middleware/error'
-import { CreateInvestmentDto } from './investment.schema'
+import type { CreateInvestmentDto } from './investment.schema'
+import { mapInvestment, mapInvestments } from './investment.mapper'
 
 export class InvestmentService {
   async findAllByFund(fund_id: string) {
@@ -12,7 +13,7 @@ export class InvestmentService {
       orderBy: { created_at: 'desc' },
     })
 
-    return investments.map(i => ({ ...i, amount_usd: Number(i.amount_usd) }))
+    return mapInvestments(investments)
   }
 
   async create(fund_id: string, dto: CreateInvestmentDto) {
@@ -36,6 +37,6 @@ export class InvestmentService {
       },
     })
 
-    return { ...investment, amount_usd: Number(investment.amount_usd) }
+    return mapInvestment(investment)
   }
 }
