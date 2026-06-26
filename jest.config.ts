@@ -5,6 +5,7 @@ const config: Config = {
   testEnvironment: 'node',
   testMatch: ['**/tests/**/*.test.ts'],
   verbose: true,
+  maxWorkers: 1,
 }
 
 export default config
