@@ -8,19 +8,47 @@ Built with TypeScript, Node.js, Express, PostgreSQL, Prisma, and Zod.
 
 ## Quick Start
 
-### 1. Prerequisites
+Choose your setup method:
+
+### Option 1: Docker (Recommended)
+
+**Prerequisites:**
+- Docker and Docker Compose installed
+
+**Setup:**
+
+```bash
+docker compose up
+```
+
+That's it. This starts:
+- Node.js application on port 3000
+- PostgreSQL on port 5432
+- Automatic database migrations
+
+Verify:
+
+```bash
+curl http://localhost:3000/api/health
+```
+
+Stop with `Ctrl+C` or run `docker compose down` in another terminal.
+
+---
+
+### Option 2: Local Development
+
+**Prerequisites:**
 - Node.js 20+
 - PostgreSQL running locally
 
-### 2. Install dependencies
+**Setup:**
 
 ```bash
+# 1. Install dependencies
 npm install
-```
 
-### 3. Set up environment variables
-
-```bash
+# 2. Set up environment variables
 cp .env.example .env
 ```
 
@@ -31,25 +59,85 @@ DATABASE_URL="postgresql://YOUR_USERNAME@localhost:5432/private_marketsdb"
 PORT=3000
 ```
 
-### 4. Run database migrations
-
 ```bash
+# 3. Run database migrations
 npm run db:migrate
-```
 
-### 5. Start the server
-
-```bash
+# 4. Start the server
 npm run dev
 ```
 
-### 6. Verify it is running
+Verify:
 
 ```bash
 curl http://localhost:3000/api/health
 ```
 
 ---
+
+## Available Scripts
+
+```bash
+npm run dev          # Start development server with auto-reload
+npm test             # Run all tests (Jest)
+npm test -- --watch  # Run tests in watch mode
+npm run build        # Compile TypeScript to JavaScript
+npm run db:migrate   # Run pending Prisma migrations
+npm run db:seed      # Seed the database with sample data
+```
+
+---
+
+## Testing
+
+Run the test suite:
+
+```bash
+npm test
+```
+
+Watch mode (re-runs on file changes):
+
+```bash
+npm test -- --watch
+```
+
+Coverage report:
+
+```bash
+npm test -- --coverage
+```
+
+### Test Structure
+
+Tests use **Jest** + **Supertest** for integration testing:
+
+- `tests/funds.test.ts` — Fund CRUD and validation
+- `tests/investors.test.ts` — Investor CRUD and unique email constraint
+- `tests/investments.test.ts` — Investment creation, relational validation, and retrieval
+- `tests/e2e.test.ts` — Complete flow across all modules (optional)
+
+Each test file:
+- Sets up a clean database before each test
+- Tests both happy paths and error cases
+- Validates HTTP status codes and response shape
+- Cleans up after all tests complete
+
+---
+
+## API Documentation
+
+View the full OpenAPI documentation at:
+
+```
+http://localhost:3000/api-docs
+```
+
+This includes:
+- All endpoint definitions
+- Request/response schemas
+- Example payloads
+- Try-it-out capability
 
 ## Architecture
 
