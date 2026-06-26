@@ -88,6 +88,59 @@ npm run db:seed      # Seed the database with sample data
 
 ---
 
+## API Usage
+
+### Health check
+
+```bash
+curl http://localhost:3000/api/health
+```
+
+### Seed the database
+
+```bash
+npm run db:seed
+```
+
+### List funds with pagination / filtering
+
+```bash
+curl "http://localhost:3000/funds?status=Investing&limit=10&page=1"
+curl "http://localhost:3000/funds?search=alpha&vintage_year=2023"
+```
+
+### Create a fund
+
+```bash
+curl -X POST http://localhost:3000/funds \
+  -H "Content-Type: application/json" \
+  -d '{"name":"Titanbay Growth Fund I","vintage_year":2024,"target_size_usd":250000000,"status":"Fundraising"}'
+```
+
+### List investors
+
+```bash
+curl http://localhost:3000/investors
+```
+
+### Create an investor
+
+```bash
+curl -X POST http://localhost:3000/investors \
+  -H "Content-Type: application/json" \
+  -d '{"name":"Lakeside Capital","email":"lakeside.capital@example.com","investor_type":"Institution"}'
+```
+
+### Create an investment
+
+```bash
+curl -X POST http://localhost:3000/funds/<FUND_ID>/investments \
+  -H "Content-Type: application/json" \
+  -d '{"investor_id":"<INVESTOR_ID>","amount_usd":10000000,"investment_date":"2024-01-22"}'
+```
+
+---
+
 ## Testing
 
 Run the test suite:
@@ -215,8 +268,8 @@ InvestorType: Individual | Institution | FamilyOffice
 
 | Method | Endpoint | Description |
 |--------|----------|-------------|
-| GET | /api/health | Health check |
-| GET | /funds | List all funds |
+| GET | /api/health | Health check with database connectivity and uptime |
+| GET | /funds | List funds with optional pagination and filters |
 | POST | /funds | Create a fund |
 | PUT | /funds/:id | Update a fund |
 | GET | /funds/:id | Get a specific fund |
@@ -224,6 +277,13 @@ InvestorType: Individual | Institution | FamilyOffice
 | POST | /investors | Create an investor |
 | GET | /funds/:fund_id/investments | List investments for a fund |
 | POST | /funds/:fund_id/investments | Create an investment |
+
+### Fund query examples
+
+```bash
+curl "http://localhost:3000/funds?status=Investing&limit=10&page=1"
+curl "http://localhost:3000/funds?search=alpha&vintage_year=2023"
+```
 
 Full spec: https://storage.googleapis.com/interview-api-doc-funds.wearebusy.engineering/index.html
 
@@ -258,6 +318,17 @@ This project was built with Claude (Anthropic) as a pair programming tool.
 - Debugging Prisma v7 compatibility issues with the adapter-based config
 - Schema design discussion and validation against private markets domain knowledge
 - Generating repetitive boilerplate such as controller and service files
+
+---
+
+## Future Improvements
+
+- Add authenticated access controls and scopes for investors and fund managers
+- Expand fund and investment reporting with IRR, DPI, and cash flow metrics
+- Add investment-level pagination/filtering for all fund and investor views
+- Support soft deletes and audit logging for financial records
+- Expose `/api/health` metadata to a centralized monitoring system
+
 
 **Decisions made independently:**
 - Modular monolith over microservices given the scope
