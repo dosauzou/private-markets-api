@@ -7,6 +7,7 @@ import { swaggerDocument } from './swagger'
 import healthRoutes from './modules/health/health.routes'
 import fundRoutes from './modules/funds/fund.routes'
 import investorRoutes from './modules/investors/investor.routes'
+import investmentRoutes from './modules/investments/investment.routes'
 
 const app = express()
 
@@ -17,6 +18,7 @@ app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument))
 app.use('/api/health', healthRoutes)
 app.use('/funds', fundRoutes)
 app.use('/investors', investorRoutes)
+app.use('/funds/:fund_id/investments', investmentRoutes)
 
 app.use(errorHandler)
 

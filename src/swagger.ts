@@ -10,6 +10,7 @@ export const swaggerDocument = {
     { name: 'Health', description: 'Health check' },
     { name: 'Funds', description: 'Fund management operations' },
     { name: 'Investors', description: 'Investor management operations' },
+    { name: 'Investments', description: 'Investment management operations' },
   ],
   paths: {
     '/api/health': {
@@ -218,6 +219,79 @@ export const swaggerDocument = {
         },
       },
     },
+    '/funds/{fund_id}/investments': {
+      get: {
+        summary: 'List all investments for a fund',
+        tags: ['Investments'],
+        parameters: [
+          {
+            name: 'fund_id',
+            in: 'path',
+            required: true,
+            schema: { type: 'string', format: 'uuid' },
+          },
+        ],
+        responses: {
+          200: {
+            description: 'List of investments',
+            content: {
+              'application/json': {
+                schema: {
+                  type: 'object',
+                  properties: {
+                    success: { type: 'boolean', example: true },
+                    data: {
+                      type: 'array',
+                      items: { '$ref': '#/components/schemas/Investment' },
+                    },
+                  },
+                },
+              },
+            },
+          },
+          404: { description: 'Fund not found' },
+        },
+      },
+      post: {
+        summary: 'Create a new investment for a fund',
+        tags: ['Investments'],
+        parameters: [
+          {
+            name: 'fund_id',
+            in: 'path',
+            required: true,
+            schema: { type: 'string', format: 'uuid' },
+          },
+        ],
+        requestBody: {
+          required: true,
+          content: {
+            'application/json': {
+              schema: { '$ref': '#/components/schemas/CreateInvestment' },
+            },
+          },
+        },
+        responses: {
+          201: {
+            description: 'Investment created',
+            content: {
+              'application/json': {
+                schema: {
+                  type: 'object',
+                  properties: {
+                    success: { type: 'boolean', example: true },
+                    data: { '$ref': '#/components/schemas/Investment' },
+                  },
+                },
+              },
+            },
+          },
+          400: { description: 'Invalid input' },
+          404: { description: 'Fund or investor not found' },
+          409: { description: 'Investor has already committed to this fund' },
+        },
+      },
+    },
   },
   components: {
     schemas: {
@@ -268,6 +342,26 @@ export const swaggerDocument = {
           name: { type: 'string', example: 'CalPERS' },
           email: { type: 'string', format: 'email', example: 'privateequity@calpers.ca.gov' },
           investor_type: { type: 'string', enum: ['Individual', 'Institution', 'FamilyOffice'], example: 'Institution' },
+        },
+      },
+      Investment: {
+        type: 'object',
+        properties: {
+          id: { type: 'string', format: 'uuid', example: '990e8400-e29b-41d4-a716-446655440004' },
+          fund_id: { type: 'string', format: 'uuid', example: '550e8400-e29b-41d4-a716-446655440000' },
+          investor_id: { type: 'string', format: 'uuid', example: '770e8400-e29b-41d4-a716-446655440002' },
+          amount_usd: { type: 'number', example: 50000000.00 },
+          investment_date: { type: 'string', format: 'date', example: '2024-03-15' },
+          created_at: { type: 'string', format: 'date-time', example: '2024-03-15T10:00:00Z' },
+        },
+      },
+      CreateInvestment: {
+        type: 'object',
+        required: ['investor_id', 'amount_usd', 'investment_date'],
+        properties: {
+          investor_id: { type: 'string', format: 'uuid', example: '770e8400-e29b-41d4-a716-446655440002' },
+          amount_usd: { type: 'number', example: 50000000.00 },
+          investment_date: { type: 'string', format: 'date', example: '2024-03-15' },
         },
       },
     },
