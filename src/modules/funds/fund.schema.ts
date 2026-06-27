@@ -20,7 +20,7 @@ export const FundListQuerySchema = z.object({
   limit: z.preprocess(toOptionalNumber, z.number().int().positive().max(100).default(20)),
   status: z.enum(['Fundraising', 'Investing', 'Closed']).optional(),
   vintage_year: z.preprocess(toOptionalNumber, z.number().int().min(1900).max(2100).optional()),
-  search: z.string().trim().min(1).optional(),
+  search: z.string().trim().min(3, 'Search term must be at least 3 characters').optional(),
 })
 
 export type CreateFundDto = z.infer<typeof CreateFundSchema>
