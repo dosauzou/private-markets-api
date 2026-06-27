@@ -53,6 +53,38 @@ export const swaggerDocument = {
       get: {
         summary: 'List all funds',
         tags: ['Funds'],
+        parameters: [
+          {
+            name: 'page',
+            in: 'query',
+            schema: { type: 'integer', minimum: 1, maximum: 1000, default: 1 },
+            description: 'Page number',
+          },
+          {
+            name: 'limit',
+            in: 'query',
+            schema: { type: 'integer', minimum: 1, maximum: 100, default: 20 },
+            description: 'Number of results per page',
+          },
+          {
+            name: 'status',
+            in: 'query',
+            schema: { type: 'string', enum: ['Fundraising', 'Investing', 'Closed'] },
+            description: 'Filter by fund status',
+          },
+          {
+            name: 'vintage_year',
+            in: 'query',
+            schema: { type: 'integer', minimum: 1900, maximum: 2100 },
+            description: 'Filter by vintage year',
+          },
+          {
+            name: 'search',
+            in: 'query',
+            schema: { type: 'string' },
+            description: 'Search funds by name',
+          },
+        ],
         responses: {
           200: {
             description: 'List of funds',
@@ -66,11 +98,20 @@ export const swaggerDocument = {
                       type: 'array',
                       items: { '$ref': '#/components/schemas/Fund' },
                     },
+                    meta: {
+                      type: 'object',
+                      properties: {
+                        total: { type: 'integer', example: 100 },
+                        page: { type: 'integer', example: 1 },
+                        limit: { type: 'integer', example: 20 },
+                      },
+                    },
                   },
                 },
               },
             },
           },
+          400: { description: 'Invalid query parameters' },
         },
       },
       post: {
