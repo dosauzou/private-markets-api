@@ -27,8 +27,9 @@ export const FundListQuerySchema = z.object({
   }, z.number().int().positive().max(100).default(20)),
   status: z.enum(['Fundraising', 'Investing', 'Closed']).optional(),
   vintage_year: z.preprocess((value) => {
-    if (typeof value === 'string' && value.length) return Number(value)
-    return undefined
+    if (value === undefined || value === '') return undefined
+    if (typeof value === 'string') return Number(value)
+    return value
   }, z.number().int().min(1900).max(2100).optional()),
   search: z.string().trim().min(1).optional(),
 })
