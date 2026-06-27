@@ -95,8 +95,8 @@ export const swaggerDocument = {
           {
             name: 'search',
             in: 'query',
-            schema: { type: 'string' },
-            description: 'Search funds by name',
+            schema: { type: 'string', minLength: 3 },
+            description: 'Search funds by name (minimum 3 characters)',
           },
         ],
         responses: {

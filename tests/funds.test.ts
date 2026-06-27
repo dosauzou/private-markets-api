@@ -190,6 +190,11 @@ describe('GET /funds', () => {
     expect(res.body.data[0].name).toBe('Alpha Growth Fund')
   })
 
+  it('rejects search terms shorter than 3 characters', async () => {
+    const res = await request(app).get('/funds?search=ab')
+    expect(res.status).toBe(400)
+  })
+
   it('paginates results with page and limit', async () => {
     for (let i = 1; i <= 5; i++) {
       await request(app).post('/funds').send({
