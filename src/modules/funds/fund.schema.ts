@@ -16,8 +16,9 @@ export const UpdateFundSchema = z.object({
 
 export const FundListQuerySchema = z.object({
   page: z.preprocess((value) => {
-    if (typeof value === 'string' && value.length) return Number(value)
-    return undefined
+    if (value === undefined || value === '') return undefined
+    if (typeof value === 'string') return Number(value)
+    return value
   }, z.number().int().positive().default(1)),
   limit: z.preprocess((value) => {
     if (typeof value === 'string' && value.length) return Number(value)
