@@ -168,7 +168,7 @@ Tests use **Jest** + **Supertest** for integration testing:
 - `tests/funds.test.ts` — Fund CRUD and validation
 - `tests/investors.test.ts` — Investor CRUD and unique email constraint
 - `tests/investments.test.ts` — Investment creation, relational validation, and retrieval
-- `tests/e2e.test.ts` — Complete flow across all modules (optional)
+- `tests/env.test.ts` — Environment variable validation
 
 Each test file:
 - Deletes relevant tables before each test (so each suite runs against a clean slate for its scope)
