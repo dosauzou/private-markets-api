@@ -8,19 +8,47 @@ Built with TypeScript, Node.js, Express, PostgreSQL, Prisma, and Zod.
 
 ## Quick Start
 
-### 1. Prerequisites
+Choose your setup method:
+
+### Option 1: Docker (Recommended)
+
+**Prerequisites:**
+- Docker and Docker Compose installed
+
+**Setup:**
+
+```bash
+docker compose up
+```
+
+That's it. This starts:
+- Node.js application on port 3000
+- PostgreSQL on port 5432
+- Automatic database migrations
+
+Verify:
+
+```bash
+curl http://localhost:3000/api/health
+```
+
+Stop with `Ctrl+C` or run `docker compose down` in another terminal.
+
+---
+
+### Option 2: Local Development
+
+**Prerequisites:**
 - Node.js 20+
 - PostgreSQL running locally
 
-### 2. Install dependencies
+**Setup:**
 
 ```bash
+# 1. Install dependencies
 npm install
-```
 
-### 3. Set up environment variables
-
-```bash
+# 2. Set up environment variables
 cp .env.example .env
 ```
 
@@ -31,25 +59,138 @@ DATABASE_URL="postgresql://YOUR_USERNAME@localhost:5432/private_marketsdb"
 PORT=3000
 ```
 
-### 4. Run database migrations
-
 ```bash
+# 3. Run database migrations
 npm run db:migrate
-```
 
-### 5. Start the server
-
-```bash
+# 4. Start the server
 npm run dev
 ```
 
-### 6. Verify it is running
+Verify:
 
 ```bash
 curl http://localhost:3000/api/health
 ```
 
 ---
+
+## Available Scripts
+
+```bash
+npm run dev          # Start development server with auto-reload
+npm test             # Run all tests (Jest)
+npm test -- --watch  # Run tests in watch mode
+npm run build        # Compile TypeScript to JavaScript
+npm run db:migrate   # Run pending Prisma migrations
+npm run db:seed      # Seed the database with sample data
+```
+
+---
+
+## API Usage
+
+### Health check
+
+```bash
+curl http://localhost:3000/api/health
+```
+
+### Seed the database
+
+```bash
+npm run db:seed
+```
+
+### List funds with pagination / filtering
+
+```bash
+curl "http://localhost:3000/funds?status=Investing&limit=10&page=1"
+curl "http://localhost:3000/funds?search=alpha&vintage_year=2023"
+```
+
+### Create a fund
+
+```bash
+curl -X POST http://localhost:3000/funds \
+  -H "Content-Type: application/json" \
+  -d '{"name":"Titanbay Growth Fund I","vintage_year":2024,"target_size_usd":250000000,"status":"Fundraising"}'
+```
+
+### List investors
+
+```bash
+curl http://localhost:3000/investors
+```
+
+### Create an investor
+
+```bash
+curl -X POST http://localhost:3000/investors \
+  -H "Content-Type: application/json" \
+  -d '{"name":"Lakeside Capital","email":"lakeside.capital@example.com","investor_type":"Institution"}'
+```
+
+### Create an investment
+
+```bash
+curl -X POST http://localhost:3000/funds/<FUND_ID>/investments \
+  -H "Content-Type: application/json" \
+  -d '{"investor_id":"<INVESTOR_ID>","amount_usd":10000000,"investment_date":"2024-01-22"}'
+```
+
+---
+
+## Testing
+
+Run the test suite:
+
+```bash
+npm test
+```
+
+Watch mode (re-runs on file changes):
+
+```bash
+npm test -- --watch
+```
+
+Coverage report:
+
+```bash
+npm test -- --coverage
+```
+
+### Test Structure
+
+Tests use **Jest** + **Supertest** for integration testing:
+
+- `tests/funds.test.ts` — Fund CRUD and validation
+- `tests/investors.test.ts` — Investor CRUD and unique email constraint
+- `tests/investments.test.ts` — Investment creation, relational validation, and retrieval
+- `tests/env.test.ts` — Environment variable validation
+
+Each test file:
+- Deletes relevant tables before each test (so each suite runs against a clean slate for its scope)
+- Tests both happy paths and error cases
+- Validates HTTP status codes and response shape
+- Cleans up after all tests complete
+
+---
+
+## API Documentation
+
+View the full OpenAPI documentation at:
+
+```
+http://localhost:3000/api-docs
+```
+
+This includes:
+- All endpoint definitions
+- Request/response schemas
+- Example payloads
+- Try-it-out capability
 
 ## Architecture
 
@@ -127,8 +268,8 @@ InvestorType: Individual | Institution | FamilyOffice
 
 | Method | Endpoint | Description |
 |--------|----------|-------------|
-| GET | /api/health | Health check |
-| GET | /funds | List all funds |
+| GET | /api/health | Health check with database connectivity and uptime |
+| GET | /funds | List funds with optional pagination and filters |
 | POST | /funds | Create a fund |
 | PUT | /funds/:id | Update a fund |
 | GET | /funds/:id | Get a specific fund |
@@ -136,6 +277,13 @@ InvestorType: Individual | Institution | FamilyOffice
 | POST | /investors | Create an investor |
 | GET | /funds/:fund_id/investments | List investments for a fund |
 | POST | /funds/:fund_id/investments | Create an investment |
+
+### Fund query examples
+
+```bash
+curl "http://localhost:3000/funds?status=Investing&limit=10&page=1"
+curl "http://localhost:3000/funds?search=alpha&vintage_year=2023"
+```
 
 Full spec: https://storage.googleapis.com/interview-api-doc-funds.wearebusy.engineering/index.html
 
@@ -170,6 +318,17 @@ This project was built with Claude (Anthropic) as a pair programming tool.
 - Debugging Prisma v7 compatibility issues with the adapter-based config
 - Schema design discussion and validation against private markets domain knowledge
 - Generating repetitive boilerplate such as controller and service files
+
+---
+
+## Future Improvements
+
+- Add authenticated access controls and scopes for investors and fund managers
+- Expand fund and investment reporting with IRR, DPI, and cash flow metrics
+- Add investment-level pagination/filtering for all fund and investor views
+- Support soft deletes and audit logging for financial records
+- Expose `/api/health` metadata to a centralized monitoring system
+
 
 **Decisions made independently:**
 - Modular monolith over microservices given the scope

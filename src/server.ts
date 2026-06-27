@@ -2,14 +2,15 @@ import 'dotenv/config';
 import app from './app';
 import { prisma } from './shared/prisma.client';
 
-const PORT = process.env.PORT ?? 3000;
-
 async function main() {
+  const { env } = await import('./config/env');
+  const PORT = env.PORT;
+
   await prisma.$connect();
-  console.log('Database connected');
+  console.log(`Database connected (${env.NODE_ENV})`);
 
   app.listen(PORT, () => {
-    console.log(`Server running on port ${PORT}`);
+    console.log(`Server running on port ${PORT} in ${env.NODE_ENV} mode`);
   });
 }
 

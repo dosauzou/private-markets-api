@@ -32,7 +32,11 @@ export function errorHandler(
       ? 'Internal server error'
       : err.message
 
-  if (process.env.NODE_ENV !== 'production') {
+  const shouldLogError =
+    process.env.NODE_ENV !== 'production' &&
+    (!(err instanceof AppError) || err.statusCode >= 500)
+
+  if (shouldLogError) {
     console.error('[Error]', err)
   }
 
