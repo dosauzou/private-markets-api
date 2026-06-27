@@ -19,7 +19,7 @@ export const FundListQuerySchema = z.object({
     if (value === undefined || value === '') return undefined
     if (typeof value === 'string') return Number(value)
     return value
-  }, z.number().int().positive().default(1)),
+  }, z.number().int().positive().max(1000).default(1)),
   limit: z.preprocess((value) => {
     if (value === undefined || value === '') return undefined
     if (typeof value === 'string') return Number(value)
