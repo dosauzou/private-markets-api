@@ -88,6 +88,12 @@ describe('GET /funds', () => {
     expect(res.status).toBe(200)
     expect(res.body.success).toBe(true)
     expect(res.body.data).toEqual([])
+    expect(res.body.meta.total).toBe(0)
+    expect(res.body.meta.page).toBe(1)
+    expect(res.body.meta.limit).toBe(20)
+    expect(res.body.meta.total_pages).toBe(0)
+    expect(res.body.meta.has_next).toBe(false)
+    expect(res.body.meta.has_previous).toBe(false)
   })
 
   it('returns all funds', async () => {
@@ -101,6 +107,128 @@ describe('GET /funds', () => {
 
     expect(res.status).toBe(200)
     expect(res.body.data).toHaveLength(1)
+    expect(res.body.meta.total).toBe(1)
+    expect(res.body.meta.total_pages).toBe(1)
+    expect(res.body.meta.has_next).toBe(false)
+    expect(res.body.meta.has_previous).toBe(false)
+  })
+
+  it('returns meta with total, page, and limit', async () => {
+    await request(app).post('/funds').send({
+      name: 'Fund Meta',
+      vintage_year: 2022,
+      target_size_usd: 100000000,
+    })
+
+    const res = await request(app).get('/funds?page=1&limit=10')
+
+    expect(res.status).toBe(200)
+    expect(res.body.meta).toBeDefined()
+    expect(res.body.meta.total).toBe(1)
+    expect(res.body.meta.page).toBe(1)
+    expect(res.body.meta.limit).toBe(10)
+  })
+
+  it('filters by status', async () => {
+    await request(app).post('/funds').send({
+      name: 'Fundraising Fund',
+      vintage_year: 2022,
+      target_size_usd: 100000000,
+      status: 'Fundraising',
+    })
+    await request(app).post('/funds').send({
+      name: 'Investing Fund',
+      vintage_year: 2022,
+      target_size_usd: 200000000,
+      status: 'Investing',
+    })
+
+    const res = await request(app).get('/funds?status=Investing')
+
+    expect(res.status).toBe(200)
+    expect(res.body.data).toHaveLength(1)
+    expect(res.body.data[0].status).toBe('Investing')
+    expect(res.body.meta.total).toBe(1)
+  })
+
+  it('filters by vintage_year', async () => {
+    await request(app).post('/funds').send({
+      name: 'Fund 2020',
+      vintage_year: 2020,
+      target_size_usd: 100000000,
+    })
+    await request(app).post('/funds').send({
+      name: 'Fund 2023',
+      vintage_year: 2023,
+      target_size_usd: 200000000,
+    })
+
+    const res = await request(app).get('/funds?vintage_year=2020')
+
+    expect(res.status).toBe(200)
+    expect(res.body.data).toHaveLength(1)
+    expect(res.body.data[0].vintage_year).toBe(2020)
+    expect(res.body.meta.total).toBe(1)
+  })
+
+  it('filters by search (partial name match)', async () => {
+    await request(app).post('/funds').send({
+      name: 'Alpha Growth Fund',
+      vintage_year: 2021,
+      target_size_usd: 100000000,
+    })
+    await request(app).post('/funds').send({
+      name: 'Beta Income Fund',
+      vintage_year: 2021,
+      target_size_usd: 200000000,
+    })
+
+    const res = await request(app).get('/funds?search=alpha')
+
+    expect(res.status).toBe(200)
+    expect(res.body.data).toHaveLength(1)
+    expect(res.body.data[0].name).toBe('Alpha Growth Fund')
+  })
+
+  it('rejects search terms shorter than 3 characters', async () => {
+    const res = await request(app).get('/funds?search=ab')
+    expect(res.status).toBe(400)
+  })
+
+  it('paginates results with page and limit', async () => {
+    for (let i = 1; i <= 5; i++) {
+      await request(app).post('/funds').send({
+        name: `Paginated Fund ${i}`,
+        vintage_year: 2020,
+        target_size_usd: 100000000,
+      })
+    }
+
+    const page1 = await request(app).get('/funds?page=1&limit=2')
+    expect(page1.status).toBe(200)
+    expect(page1.body.data).toHaveLength(2)
+    expect(page1.body.meta.total).toBe(5)
+    expect(page1.body.meta.page).toBe(1)
+    expect(page1.body.meta.limit).toBe(2)
+
+    const page2 = await request(app).get('/funds?page=2&limit=2')
+    expect(page2.status).toBe(200)
+    expect(page2.body.data).toHaveLength(2)
+    expect(page2.body.meta.page).toBe(2)
+  })
+
+  it('returns 400 when page exceeds maximum boundary of 1000', async () => {
+    const res = await request(app).get('/funds?page=1001')
+
+    expect(res.status).toBe(400)
+    expect(res.body.success).toBe(false)
+  })
+
+  it('returns 400 when limit exceeds maximum of 100', async () => {
+    const res = await request(app).get('/funds?limit=101')
+
+    expect(res.status).toBe(400)
+    expect(res.body.success).toBe(false)
   })
 })
 

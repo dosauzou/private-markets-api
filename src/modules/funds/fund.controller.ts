@@ -1,13 +1,14 @@
 import { Request, Response, NextFunction } from 'express'
 import { FundService } from './fund.service'
-import { CreateFundSchema, UpdateFundSchema } from './fund.schema'
+import { CreateFundSchema, FundListQuerySchema, UpdateFundSchema } from './fund.schema'
 
 const fundService = new FundService()
 
 export async function getAllFunds(req: Request, res: Response, next: NextFunction) {
   try {
-    const data = await fundService.findAll()
-    res.json({ success: true, data })
+    const query = FundListQuerySchema.parse(req.query)
+    const result = await fundService.findAll(query)
+    res.json({ success: true, data: result.items, meta: result.meta })
   } catch (e) { next(e) }
 }
 
