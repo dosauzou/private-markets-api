@@ -39,8 +39,8 @@ export class FundService {
         limit: query.limit,
         total_pages: totalPages,
         has_next: query.page < totalPages,
-        has_previous: query.page > 1,
-      },
+        has_previous: totalPages > 0 && query.page > 1,
+      }
     }
   }
 
