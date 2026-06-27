@@ -20,12 +20,14 @@ describe('GET /api/health', () => {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const spy = jest.spyOn(prisma, '$queryRaw' as any).mockRejectedValueOnce(new Error('Connection refused'))
 
-    const res = await request(app).get('/api/health')
+    try {
+      const res = await request(app).get('/api/health')
 
-    expect(res.status).toBe(503)
-    expect(res.body.success).toBe(false)
-    expect(res.body.error).toBe('Database unreachable')
-
-    spy.mockRestore()
+      expect(res.status).toBe(503)
+      expect(res.body.success).toBe(false)
+      expect(res.body.error).toBe('Database unreachable')
+    } finally {
+      spy.mockRestore()
+    }
   })
 })
