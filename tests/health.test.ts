@@ -1,6 +1,11 @@
-import { describe, it, expect, jest } from '@jest/globals'
+import { describe, it, expect, jest, afterAll } from '@jest/globals'
 import request from 'supertest'
 import app from '../src/app'
+import { prisma } from '../src/shared/prisma.client'
+
+afterAll(async () => {
+  await prisma.$disconnect()
+})
 
 describe('GET /api/health', () => {
   it('returns 200 with health payload when database is reachable', async () => {
