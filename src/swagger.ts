@@ -30,7 +30,15 @@ export const swaggerDocument = {
                       type: 'object',
                       properties: {
                         status: { type: 'string', example: 'ok' },
-                        db: { type: 'string', example: 'connected' },
+                        environment: { type: 'string', example: 'production' },
+                        uptime_seconds: { type: 'integer', example: 3600 },
+                        db: {
+                          type: 'object',
+                          properties: {
+                            status: { type: 'string', example: 'connected' },
+                          },
+                        },
+                        server_time: { type: 'string', format: 'date-time', example: '2024-01-15T10:30:00Z' },
                       },
                     },
                   },
