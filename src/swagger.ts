@@ -46,6 +46,20 @@ export const swaggerDocument = {
               },
             },
           },
+          503: {
+            description: 'Database unreachable',
+            content: {
+              'application/json': {
+                schema: {
+                  type: 'object',
+                  properties: {
+                    success: { type: 'boolean', example: false },
+                    error: { type: 'string', example: 'Database unreachable' },
+                  },
+                },
+              },
+            },
+          },
         },
       },
     },
