@@ -2,7 +2,7 @@ import { z } from 'zod'
 
 const EnvSchema = z.object({
   DATABASE_URL: z.preprocess((value) => {
-    if (typeof value === 'string') return value
+    if (typeof value === 'string') return value.trim()
     return ''
   }, z.string()
     .nonempty('DATABASE_URL is required')
