@@ -171,7 +171,7 @@ Tests use **Jest** + **Supertest** for integration testing:
 - `tests/e2e.test.ts` — Complete flow across all modules (optional)
 
 Each test file:
-- Sets up a clean database before each test
+- Deletes relevant tables before each test (so each suite runs against a clean slate for its scope)
 - Tests both happy paths and error cases
 - Validates HTTP status codes and response shape
 - Cleans up after all tests complete
