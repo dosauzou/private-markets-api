@@ -7,7 +7,10 @@ const EnvSchema = z.object({
   }, z.string()
     .nonempty('DATABASE_URL is required')
     .refine((value) => /^(postgres(ql)?:\/\/)/.test(value), 'DATABASE_URL must be a PostgreSQL connection string')),
-  PORT: z.coerce.number().int().positive().default(3000),
+  PORT: z.preprocess(
+    (value) => (value === undefined || value === '' ? undefined : value),
+    z.coerce.number().int().positive().default(3000),
+  ),
   NODE_ENV: z.enum(['development', 'test', 'production']).default('development'),
 })
 
