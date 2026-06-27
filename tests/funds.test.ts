@@ -88,6 +88,12 @@ describe('GET /funds', () => {
     expect(res.status).toBe(200)
     expect(res.body.success).toBe(true)
     expect(res.body.data).toEqual([])
+    expect(res.body.meta.total).toBe(0)
+    expect(res.body.meta.page).toBe(1)
+    expect(res.body.meta.limit).toBe(20)
+    expect(res.body.meta.total_pages).toBe(0)
+    expect(res.body.meta.has_next).toBe(false)
+    expect(res.body.meta.has_previous).toBe(false)
   })
 
   it('returns all funds', async () => {
@@ -101,6 +107,10 @@ describe('GET /funds', () => {
 
     expect(res.status).toBe(200)
     expect(res.body.data).toHaveLength(1)
+    expect(res.body.meta.total).toBe(1)
+    expect(res.body.meta.total_pages).toBe(1)
+    expect(res.body.meta.has_next).toBe(false)
+    expect(res.body.meta.has_previous).toBe(false)
   })
 
   it('returns meta with total, page, and limit', async () => {

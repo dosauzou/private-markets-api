@@ -1,4 +1,5 @@
 import { z } from 'zod'
+import { toOptionalNumber } from '../shared/validation/preprocess'
 
 const EnvSchema = z.object({
   DATABASE_URL: z.preprocess((value) => {
@@ -8,8 +9,8 @@ const EnvSchema = z.object({
     .nonempty('DATABASE_URL is required')
     .refine((value) => /^(postgres(ql)?:\/\/)/.test(value), 'DATABASE_URL must be a PostgreSQL connection string')),
   PORT: z.preprocess(
-    (value) => (value === undefined || value === '' ? undefined : value),
-    z.coerce.number().int().positive().default(3000),
+    toOptionalNumber,
+    z.number().int().positive().default(3000),
   ),
   NODE_ENV: z.enum(['development', 'test', 'production']).default('development'),
 })

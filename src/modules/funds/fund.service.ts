@@ -29,12 +29,17 @@ export class FundService {
       prisma.fund.count({ where }),
     ])
 
+    const totalPages = Math.ceil(total / query.limit)
+
     return {
       items,
       meta: {
         total,
         page: query.page,
         limit: query.limit,
+        total_pages: totalPages,
+        has_next: query.page < totalPages,
+        has_previous: query.page > 1,
       },
     }
   }

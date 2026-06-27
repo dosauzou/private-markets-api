@@ -1,4 +1,5 @@
 import { z } from 'zod'
+import { toOptionalNumber } from '../../shared/validation/preprocess'
 
 export const CreateFundSchema = z.object({
   name: z.string().min(1, 'Name is required'),
@@ -15,22 +16,10 @@ export const UpdateFundSchema = z.object({
 })
 
 export const FundListQuerySchema = z.object({
-  page: z.preprocess((value) => {
-    if (value === undefined || value === '') return undefined
-    if (typeof value === 'string') return Number(value)
-    return value
-  }, z.number().int().positive().max(1000).default(1)),
-  limit: z.preprocess((value) => {
-    if (value === undefined || value === '') return undefined
-    if (typeof value === 'string') return Number(value)
-    return value
-  }, z.number().int().positive().max(100).default(20)),
+  page: z.preprocess(toOptionalNumber, z.number().int().positive().max(1000).default(1)),
+  limit: z.preprocess(toOptionalNumber, z.number().int().positive().max(100).default(20)),
   status: z.enum(['Fundraising', 'Investing', 'Closed']).optional(),
-  vintage_year: z.preprocess((value) => {
-    if (value === undefined || value === '') return undefined
-    if (typeof value === 'string') return Number(value)
-    return value
-  }, z.number().int().min(1900).max(2100).optional()),
+  vintage_year: z.preprocess(toOptionalNumber, z.number().int().min(1900).max(2100).optional()),
   search: z.string().trim().min(1).optional(),
 })
 
