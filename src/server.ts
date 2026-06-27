@@ -1,11 +1,11 @@
 import 'dotenv/config';
 import app from './app';
-import { env } from './config/env';
 import { prisma } from './shared/prisma.client';
 
-const PORT = env.PORT;
-
 async function main() {
+  const { env } = await import('./config/env');
+  const PORT = env.PORT;
+
   await prisma.$connect();
   console.log(`Database connected (${env.NODE_ENV})`);
 
