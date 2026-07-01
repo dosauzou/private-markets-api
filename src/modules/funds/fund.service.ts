@@ -24,7 +24,7 @@ export class FundService {
 
     return prisma.fund.findMany({
       where,
-      orderBy: { created_at: 'desc' },
+      orderBy: [{ created_at: 'desc' }, { id: 'desc' }],
       skip: shouldPaginate ? (page - 1) * limit : undefined,
       take: shouldPaginate ? limit : undefined,
     })
