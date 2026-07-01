@@ -234,13 +234,14 @@ describe('GET /funds', () => {
       })
     }
 
-    const page1 = await request(app).get('/funds?page=1&limit=2')
+    const page1 = await request(app).get('/funds?page=1&limit=1')
     expect(page1.status).toBe(200)
-    expect(page1.body).toHaveLength(2)
+    expect(page1.body).toHaveLength(1)
 
-    const page2 = await request(app).get('/funds?page=2&limit=2')
+    const page2 = await request(app).get('/funds?page=2&limit=1')
     expect(page2.status).toBe(200)
-    expect(page2.body).toHaveLength(2)
+    expect(page2.body).toHaveLength(1)
+    expect(page2.body[0].id).not.toBe(page1.body[0].id)
   })
 
   it('returns 400 when page exceeds maximum boundary of 1000', async () => {
