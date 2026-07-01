@@ -117,21 +117,41 @@ describe('GET /funds', () => {
   })
 
   it('applies page and limit query params', async () => {
-    await request(app).post('/funds').send({
-      name: 'Fund Meta',
-      vintage_year: 2022,
-      target_size_usd: 100000000,
-    })
-    await request(app).post('/funds').send({
-      name: 'Fund Meta 2',
-      vintage_year: 2022,
-      target_size_usd: 100000000,
-    })
+    for (let i = 1; i <= 15; i++) {
+      await request(app).post('/funds').send({
+        name: `Fund Meta ${i}`,
+        vintage_year: 2022,
+        target_size_usd: 100000000,
+      })
+    }
 
-    const res = await request(app).get('/funds?page=1&limit=10')
+    const page1 = await request(app).get('/funds?page=1&limit=10')
+    const page2 = await request(app).get('/funds?page=2&limit=10')
 
-    expect(res.status).toBe(200)
-    expect(res.body).toHaveLength(2)
+    expect(page1.status).toBe(200)
+    expect(page1.body).toHaveLength(10)
+    expect(page1.body.map((fund: { name: string }) => fund.name)).toEqual([
+      'Fund Meta 15',
+      'Fund Meta 14',
+      'Fund Meta 13',
+      'Fund Meta 12',
+      'Fund Meta 11',
+      'Fund Meta 10',
+      'Fund Meta 9',
+      'Fund Meta 8',
+      'Fund Meta 7',
+      'Fund Meta 6',
+    ])
+
+    expect(page2.status).toBe(200)
+    expect(page2.body).toHaveLength(5)
+    expect(page2.body.map((fund: { name: string }) => fund.name)).toEqual([
+      'Fund Meta 5',
+      'Fund Meta 4',
+      'Fund Meta 3',
+      'Fund Meta 2',
+      'Fund Meta 1',
+    ])
   })
 
   it('filters by status', async () => {
