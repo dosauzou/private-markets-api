@@ -119,6 +119,20 @@ curl -X POST http://localhost:3000/funds \
   -d '{"name":"Titanbay Growth Fund I","vintage_year":2024,"target_size_usd":250000000,"status":"Fundraising"}'
 ```
 
+### Get a specific fund
+
+```bash
+curl http://localhost:3000/funds/<FUND_ID>
+```
+
+### Update a fund
+
+```bash
+curl -X PUT http://localhost:3000/funds \
+  -H "Content-Type: application/json" \
+  -d '{"id":"<FUND_ID>","status":"Investing"}'
+```
+
 ### List investors
 
 ```bash
@@ -139,6 +153,12 @@ curl -X POST http://localhost:3000/investors \
 curl -X POST http://localhost:3000/funds/<FUND_ID>/investments \
   -H "Content-Type: application/json" \
   -d '{"investor_id":"<INVESTOR_ID>","amount_usd":10000000,"investment_date":"2024-01-22"}'
+```
+
+### List investments for a fund
+
+```bash
+curl http://localhost:3000/funds/<FUND_ID>/investments
 ```
 
 ---
@@ -315,13 +335,15 @@ All errors return a consistent shape:
 
 ## AI Usage
 
-This project was built with Claude (Anthropic) as a pair programming tool.
+This project was developed with assistance from Claude (Anthropic) as a pair programming tool.
+GitHub Copilot was also used as a reviewer for feedback on code quality, consistency, and potential risks.
 
 **AI was used for:**
 - Scaffolding the initial project structure and boilerplate
 - Debugging Prisma v7 compatibility issues with the adapter-based config
 - Schema design discussion and validation against private markets domain knowledge
 - Generating repetitive boilerplate such as controller and service files
+- Reviewing pull request changes and surfacing potential improvements
 
 ---
 

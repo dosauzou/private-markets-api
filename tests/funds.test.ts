@@ -138,7 +138,7 @@ describe('GET /funds', () => {
 
     const combined = [...page1Names, ...page2Names]
     expect(new Set(combined).size).toBe(15)
-    expect(page1Names.some((n) => page2Names.includes(n))).toBe(false)
+    expect(page1Names.some((n: string) => page2Names.includes(n))).toBe(false)
     expect(combined.sort()).toEqual(Array.from({ length: 15 }, (_, i) => `Fund Meta ${i + 1}`).sort())
   })
 
