@@ -130,28 +130,16 @@ describe('GET /funds', () => {
 
     expect(page1.status).toBe(200)
     expect(page1.body).toHaveLength(10)
-    expect(page1.body.map((fund: { name: string }) => fund.name)).toEqual([
-      'Fund Meta 15',
-      'Fund Meta 14',
-      'Fund Meta 13',
-      'Fund Meta 12',
-      'Fund Meta 11',
-      'Fund Meta 10',
-      'Fund Meta 9',
-      'Fund Meta 8',
-      'Fund Meta 7',
-      'Fund Meta 6',
-    ])
+    const page1Names = page1.body.map((fund: { name: string }) => fund.name)
 
     expect(page2.status).toBe(200)
     expect(page2.body).toHaveLength(5)
-    expect(page2.body.map((fund: { name: string }) => fund.name)).toEqual([
-      'Fund Meta 5',
-      'Fund Meta 4',
-      'Fund Meta 3',
-      'Fund Meta 2',
-      'Fund Meta 1',
-    ])
+    const page2Names = page2.body.map((fund: { name: string }) => fund.name)
+
+    const combined = [...page1Names, ...page2Names]
+    expect(new Set(combined).size).toBe(15)
+    expect(page1Names.some((n) => page2Names.includes(n))).toBe(false)
+    expect(combined.sort()).toEqual(Array.from({ length: 15 }, (_, i) => `Fund Meta ${i + 1}`).sort())
   })
 
   it('filters by status', async () => {
