@@ -71,13 +71,13 @@ export const swaggerDocument = {
           {
             name: 'page',
             in: 'query',
-            schema: { type: 'integer', minimum: 1, maximum: 1000, default: 1 },
+            schema: { type: 'integer', minimum: 1, maximum: 1000 },
             description: 'Page number',
           },
           {
             name: 'limit',
             in: 'query',
-            schema: { type: 'integer', minimum: 1, maximum: 100, default: 20 },
+            schema: { type: 'integer', minimum: 1, maximum: 100 },
             description: 'Number of results per page',
           },
           {
@@ -95,8 +95,8 @@ export const swaggerDocument = {
           {
             name: 'search',
             in: 'query',
-            schema: { type: 'string', minLength: 3 },
-            description: 'Search funds by name (minimum 3 characters)',
+            schema: { type: 'string' },
+            description: 'Search funds by name',
           },
         ],
         responses: {
