@@ -1,11 +1,14 @@
 import { Prisma } from '@prisma/client'
 import { prisma } from '../../shared/prisma.client'
 import { AppError } from '../../shared/middleware/error'
-import { CreateFundDto, FundListQueryDto, UpdateFundDto } from './fund.schema'
+import { CreateFundDto, FundListQueryDto, UpdateFundDataDto } from './fund.schema'
 
 export class FundService {
   async findAll(query: FundListQueryDto) {
     const where: Prisma.FundWhereInput = {}
+    const shouldPaginate = query.page !== undefined || query.limit !== undefined
+    const page = query.page ?? 1
+    const limit = query.limit ?? 20
 
     if (query.status) {
       where.status = query.status
@@ -19,29 +22,12 @@ export class FundService {
       where.name = { contains: query.search, mode: 'insensitive' }
     }
 
-    const [items, total] = await prisma.$transaction([
-      prisma.fund.findMany({
-        where,
-        orderBy: { created_at: 'desc' },
-        skip: (query.page - 1) * query.limit,
-        take: query.limit,
-      }),
-      prisma.fund.count({ where }),
-    ])
-
-    const totalPages = Math.ceil(total / query.limit)
-
-    return {
-      items,
-      meta: {
-        total,
-        page: query.page,
-        limit: query.limit,
-        total_pages: totalPages,
-        has_next: query.page < totalPages,
-        has_previous: totalPages > 0 && query.page > 1,
-      }
-    }
+    return prisma.fund.findMany({
+      where,
+      orderBy: { created_at: 'desc' },
+      skip: shouldPaginate ? (page - 1) * limit : undefined,
+      take: shouldPaginate ? limit : undefined,
+    })
   }
 
   async findById(id: string) {
@@ -54,7 +40,7 @@ export class FundService {
     return prisma.fund.create({ data: dto })
   }
 
-  async update(id: string, dto: UpdateFundDto) {
+  async update(id: string, dto: UpdateFundDataDto) {
     await this.findById(id)
     return prisma.fund.update({ where: { id }, data: dto })
   }

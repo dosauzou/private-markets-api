@@ -22,8 +22,9 @@ describe('GET /api/health', () => {
 
   it('returns 503 when database is unreachable', async () => {
     const { prisma } = await import('../src/shared/prisma.client')
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const spy = jest.spyOn(prisma, '$queryRaw' as any).mockRejectedValueOnce(new Error('Connection refused'))
+    const spy = jest
+      .spyOn(prisma as unknown as { $queryRaw: () => Promise<unknown> }, '$queryRaw')
+      .mockRejectedValueOnce(new Error('Connection refused'))
 
     try {
       const res = await request(app).get('/api/health')

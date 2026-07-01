@@ -6,6 +6,6 @@ const router = Router()
 router.get('/', getAllFunds)
 router.get('/:id', getFundById)
 router.post('/', createFund)
-router.put('/:id', updateFund)
+router.put('/', updateFund)
 
 export default router

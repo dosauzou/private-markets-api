@@ -26,8 +26,8 @@ describe('End-to-end investment flow', () => {
       status: 'Fundraising',
     })
 
-    if (fundRes.status !== 201 || !fundRes.body.data?.id) throw new Error(`Fund creation failed`)
-    const createdFundId = fundRes.body.data.id
+    if (fundRes.status !== 201 || !fundRes.body.id) throw new Error(`Fund creation failed`)
+    const createdFundId = fundRes.body.id
 
     // Step 2: Create an investor
     const investorRes = await request(app).post('/investors').send({
@@ -36,8 +36,8 @@ describe('End-to-end investment flow', () => {
       investor_type: 'Institution',
     })
 
-    if (investorRes.status !== 201 || !investorRes.body.data?.id) throw new Error(`Investor creation failed`)
-    const createdInvestorId = investorRes.body.data.id
+    if (investorRes.status !== 201 || !investorRes.body.id) throw new Error(`Investor creation failed`)
+    const createdInvestorId = investorRes.body.id
 
     // Step 3: Create an investment linking fund and investor
     const investmentRes = await request(app)
@@ -49,17 +49,17 @@ describe('End-to-end investment flow', () => {
       })
 
     expect(investmentRes.status).toBe(201)
-    expect(investmentRes.body.data.fund_id).toBe(createdFundId)
-    expect(investmentRes.body.data.investor_id).toBe(createdInvestorId)
-    expect(investmentRes.body.data.amount_usd).toBe(50000000)
+    expect(investmentRes.body.fund_id).toBe(createdFundId)
+    expect(investmentRes.body.investor_id).toBe(createdInvestorId)
+    expect(investmentRes.body.amount_usd).toBe(50000000)
 
     // Step 4: Retrieve the investment
     const getRes = await request(app).get(`/funds/${createdFundId}/investments`)
 
     expect(getRes.status).toBe(200)
-    expect(getRes.body.data).toHaveLength(1)
-    expect(getRes.body.data[0].fund_id).toBe(createdFundId)
-    expect(getRes.body.data[0].investor_id).toBe(createdInvestorId)
-    expect(getRes.body.data[0].amount_usd).toBe(50000000)
+    expect(getRes.body).toHaveLength(1)
+    expect(getRes.body[0].fund_id).toBe(createdFundId)
+    expect(getRes.body[0].investor_id).toBe(createdInvestorId)
+    expect(getRes.body[0].amount_usd).toBe(50000000)
   })
 })

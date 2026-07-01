@@ -25,10 +25,9 @@ describe('POST /investors', () => {
       })
 
     expect(res.status).toBe(201)
-    expect(res.body.success).toBe(true)
-    expect(res.body.data.name).toBe('Goldman Sachs Asset Management')
-    expect(res.body.data.email).toBe('investments@gsam.com')
-    expect(res.body.data.investor_type).toBe('Institution')
+    expect(res.body.name).toBe('Goldman Sachs Asset Management')
+    expect(res.body.email).toBe('investments@gsam.com')
+    expect(res.body.investor_type).toBe('Institution')
   })
 
   it('returns 409 if email already exists', async () => {
@@ -86,8 +85,7 @@ describe('GET /investors', () => {
     const res = await request(app).get('/investors')
 
     expect(res.status).toBe(200)
-    expect(res.body.success).toBe(true)
-    expect(res.body.data).toEqual([])
+    expect(res.body).toEqual([])
   })
 
   it('returns all investors', async () => {
@@ -100,6 +98,6 @@ describe('GET /investors', () => {
     const res = await request(app).get('/investors')
 
     expect(res.status).toBe(200)
-    expect(res.body.data).toHaveLength(1)
+    expect(res.body).toHaveLength(1)
   })
 })
