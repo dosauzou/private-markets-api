@@ -72,13 +72,15 @@ export const swaggerDocument = {
             name: 'page',
             in: 'query',
             schema: { type: 'integer', minimum: 1, maximum: 1000 },
-            description: 'Page number',
+            description:
+              'Page number (optional). If provided without `limit`, `limit` defaults to 20. If both `page` and `limit` are omitted, results are unpaginated.',
           },
           {
             name: 'limit',
             in: 'query',
             schema: { type: 'integer', minimum: 1, maximum: 100 },
-            description: 'Number of results per page',
+            description:
+              'Number of results per page (optional). If provided without `page`, `page` defaults to 1. If both `page` and `limit` are omitted, results are unpaginated.',
           },
           {
             name: 'status',
