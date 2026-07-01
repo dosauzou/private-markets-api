@@ -275,7 +275,7 @@ InvestorType: Individual | Institution | FamilyOffice
 | GET | /api/health | Health check with database connectivity and uptime |
 | GET | /funds | List funds with optional pagination and filters |
 | POST | /funds | Create a fund |
-| PUT | /funds | Update a fund |
+| PUT | /funds | Update a fund (body includes `id` + at least one updatable field) |
 | GET | /funds/:id | Get a specific fund |
 | GET | /investors | List all investors |
 | POST | /investors | Create an investor |
