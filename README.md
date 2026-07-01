@@ -32,6 +32,18 @@ Verify:
 curl http://localhost:3000/api/health
 ```
 
+If you want sample data, run the seed command inside the app container after Docker is up:
+
+```bash
+docker compose exec app npm run db:seed
+```
+
+Then open Swagger UI to explore and test the endpoints:
+
+```
+http://localhost:3000/api-docs
+```
+
 Stop with `Ctrl+C` or run `docker compose down` in another terminal.
 
 ---
@@ -41,6 +53,10 @@ Stop with `Ctrl+C` or run `docker compose down` in another terminal.
 **Prerequisites:**
 - Node.js 20+
 - PostgreSQL running locally
+
+Your local Postgres setup must either:
+- match the example values below (`postgres` / `postgres` / `appdb`), or
+- use your own local Postgres user, password, and database, with `.env` updated to match
 
 **Setup:**
 
@@ -55,15 +71,21 @@ cp .env.example .env
 Update `.env` with your database connection:
 
 ```
-DATABASE_URL="postgresql://YOUR_USERNAME@localhost:5432/private_marketsdb"
+DATABASE_URL="postgresql://postgres:postgres@localhost:5432/appdb"
 PORT=3000
+NODE_ENV=development
 ```
+
+If you want to use the same Postgres values documented in this repo, create a local database named `appdb` that is accessible with user `postgres` and password `postgres`.
 
 ```bash
 # 3. Run database migrations
 npm run db:migrate
 
-# 4. Start the server
+# 4. Optionally seed sample data
+npm run db:seed
+
+# 5. Start the server
 npm run dev
 ```
 
@@ -71,6 +93,12 @@ Verify:
 
 ```bash
 curl http://localhost:3000/api/health
+```
+
+Then open Swagger UI to explore and test the endpoints:
+
+```
+http://localhost:3000/api-docs
 ```
 
 ---
@@ -97,6 +125,14 @@ curl http://localhost:3000/api/health
 ```
 
 ### Seed the database
+
+For Docker setup:
+
+```bash
+docker compose exec app npm run db:seed
+```
+
+For local development setup:
 
 ```bash
 npm run db:seed
@@ -307,6 +343,12 @@ InvestorType: Individual | Institution | FamilyOffice
 ```bash
 curl "http://localhost:3000/funds?status=Investing&limit=10&page=1"
 curl "http://localhost:3000/funds?search=alpha&vintage_year=2023"
+```
+
+Test endpoints interactively in Swagger UI at:
+
+```
+http://localhost:3000/api-docs
 ```
 
 Full spec: https://storage.googleapis.com/interview-api-doc-funds.wearebusy.engineering/index.html
