@@ -16,14 +16,14 @@ beforeAll(async () => {
     vintage_year: 2024,
     target_size_usd: 500000000,
   })
-  fundId = fundRes.body.data.id
+  fundId = fundRes.body.id
 
   const investorRes = await request(app).post('/investors').send({
     name: 'Test Investor',
     email: 'test@investor.com',
     investor_type: 'Institution',
   })
-  investorId = investorRes.body.data.id
+  investorId = investorRes.body.id
 })
 
 afterEach(async () => {
@@ -47,10 +47,9 @@ describe('POST /funds/:fund_id/investments', () => {
       })
 
     expect(res.status).toBe(201)
-    expect(res.body.success).toBe(true)
-    expect(res.body.data.amount_usd).toBe(10000000)
-    expect(res.body.data.investor_id).toBe(investorId)
-    expect(res.body.data.fund_id).toBe(fundId)
+    expect(res.body.amount_usd).toBe(10000000)
+    expect(res.body.investor_id).toBe(investorId)
+    expect(res.body.fund_id).toBe(fundId)
   })
 
   it('returns 404 if fund does not exist', async () => {
@@ -161,8 +160,7 @@ describe('GET /funds/:fund_id/investments', () => {
     const res = await request(app).get(`/funds/${fundId}/investments`)
 
     expect(res.status).toBe(200)
-    expect(res.body.success).toBe(true)
-    expect(res.body.data).toEqual([])
+    expect(res.body).toEqual([])
   })
 
   it('returns all investments for a fund', async () => {
@@ -177,9 +175,8 @@ describe('GET /funds/:fund_id/investments', () => {
     const res = await request(app).get(`/funds/${fundId}/investments`)
 
     expect(res.status).toBe(200)
-    expect(res.body.success).toBe(true)
-    expect(res.body.data.length).toBe(1)
-    expect(res.body.data[0].amount_usd).toBe(10000000)
+    expect(res.body.length).toBe(1)
+    expect(res.body[0].amount_usd).toBe(10000000)
   })
 
   it('returns 404 if fund does not exist', async () => {

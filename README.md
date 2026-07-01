@@ -82,7 +82,7 @@ npm run dev          # Start development server with auto-reload
 npm test             # Run all tests (Jest)
 npm test -- --watch  # Run tests in watch mode
 npm run build        # Compile TypeScript to JavaScript
-npm run db:migrate   # Run pending Prisma migrations
+npm run db:migrate   # Create/apply a Prisma migration in local development
 npm run db:seed      # Seed the database with sample data
 ```
 
@@ -103,6 +103,8 @@ npm run db:seed
 ```
 
 ### List funds with pagination / filtering
+
+`GET /funds` returns an array and supports optional query params (`status`, `search`, `vintage_year`, `page`, `limit`) for filtering and paging.
 
 ```bash
 curl "http://localhost:3000/funds?status=Investing&limit=10&page=1"
@@ -168,7 +170,9 @@ Tests use **Jest** + **Supertest** for integration testing:
 - `tests/funds.test.ts` — Fund CRUD and validation
 - `tests/investors.test.ts` — Investor CRUD and unique email constraint
 - `tests/investments.test.ts` — Investment creation, relational validation, and retrieval
+- `tests/health.test.ts` — Health endpoint availability and DB connectivity behavior
 - `tests/env.test.ts` — Environment variable validation
+- `tests/e2e.test.ts` — Full flow across funds, investors, and investments
 
 Each test file:
 - Deletes relevant tables before each test (so each suite runs against a clean slate for its scope)
@@ -271,7 +275,7 @@ InvestorType: Individual | Institution | FamilyOffice
 | GET | /api/health | Health check with database connectivity and uptime |
 | GET | /funds | List funds with optional pagination and filters |
 | POST | /funds | Create a fund |
-| PUT | /funds/:id | Update a fund |
+| PUT | /funds | Update a fund (body includes `id` + at least one updatable field) |
 | GET | /funds/:id | Get a specific fund |
 | GET | /investors | List all investors |
 | POST | /investors | Create an investor |

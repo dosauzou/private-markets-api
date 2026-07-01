@@ -71,14 +71,16 @@ export const swaggerDocument = {
           {
             name: 'page',
             in: 'query',
-            schema: { type: 'integer', minimum: 1, maximum: 1000, default: 1 },
-            description: 'Page number',
+            schema: { type: 'integer', minimum: 1, maximum: 1000 },
+            description:
+              'Page number (optional). If provided without `limit`, `limit` defaults to 20. If both `page` and `limit` are omitted, results are unpaginated.',
           },
           {
             name: 'limit',
             in: 'query',
-            schema: { type: 'integer', minimum: 1, maximum: 100, default: 20 },
-            description: 'Number of results per page',
+            schema: { type: 'integer', minimum: 1, maximum: 100 },
+            description:
+              'Number of results per page (optional). If provided without `page`, `page` defaults to 1. If both `page` and `limit` are omitted, results are unpaginated.',
           },
           {
             name: 'status',
@@ -95,8 +97,8 @@ export const swaggerDocument = {
           {
             name: 'search',
             in: 'query',
-            schema: { type: 'string', minLength: 3 },
-            description: 'Search funds by name (minimum 3 characters)',
+            schema: { type: 'string' },
+            description: 'Search funds by name',
           },
         ],
         responses: {
@@ -105,25 +107,8 @@ export const swaggerDocument = {
             content: {
               'application/json': {
                 schema: {
-                  type: 'object',
-                  properties: {
-                    success: { type: 'boolean', example: true },
-                    data: {
-                      type: 'array',
-                      items: { '$ref': '#/components/schemas/Fund' },
-                    },
-                    meta: {
-                      type: 'object',
-                      properties: {
-                        total: { type: 'integer', example: 100 },
-                        page: { type: 'integer', example: 1 },
-                        limit: { type: 'integer', example: 20 },
-                        total_pages: { type: 'integer', example: 5 },
-                        has_next: { type: 'boolean', example: true },
-                        has_previous: { type: 'boolean', example: false },
-                      },
-                    },
-                  },
+                  type: 'array',
+                  items: { '$ref': '#/components/schemas/Fund' },
                 },
               },
             },
@@ -147,16 +132,34 @@ export const swaggerDocument = {
             description: 'Fund created',
             content: {
               'application/json': {
-                schema: {
-                  type: 'object',
-                  properties: {
-                    success: { type: 'boolean', example: true },
-                    data: { '$ref': '#/components/schemas/Fund' },
-                  },
-                },
+                schema: { '$ref': '#/components/schemas/Fund' },
               },
             },
           },
+          400: { description: 'Invalid input' },
+        },
+      },
+      put: {
+        summary: 'Update an existing fund',
+        tags: ['Funds'],
+        requestBody: {
+          required: true,
+          content: {
+            'application/json': {
+              schema: { '$ref': '#/components/schemas/UpdateFund' },
+            },
+          },
+        },
+        responses: {
+          200: {
+            description: 'Fund updated',
+            content: {
+              'application/json': {
+                schema: { '$ref': '#/components/schemas/Fund' },
+              },
+            },
+          },
+          404: { description: 'Fund not found' },
           400: { description: 'Invalid input' },
         },
       },
@@ -178,55 +181,11 @@ export const swaggerDocument = {
             description: 'Fund found',
             content: {
               'application/json': {
-                schema: {
-                  type: 'object',
-                  properties: {
-                    success: { type: 'boolean', example: true },
-                    data: { '$ref': '#/components/schemas/Fund' },
-                  },
-                },
+                schema: { '$ref': '#/components/schemas/Fund' },
               },
             },
           },
           404: { description: 'Fund not found' },
-        },
-      },
-      put: {
-        summary: 'Update an existing fund',
-        tags: ['Funds'],
-        parameters: [
-          {
-            name: 'id',
-            in: 'path',
-            required: true,
-            schema: { type: 'string', format: 'uuid' },
-          },
-        ],
-        requestBody: {
-          required: true,
-          content: {
-            'application/json': {
-              schema: { '$ref': '#/components/schemas/UpdateFund' },
-            },
-          },
-        },
-        responses: {
-          200: {
-            description: 'Fund updated',
-            content: {
-              'application/json': {
-                schema: {
-                  type: 'object',
-                  properties: {
-                    success: { type: 'boolean', example: true },
-                    data: { '$ref': '#/components/schemas/Fund' },
-                  },
-                },
-              },
-            },
-          },
-          404: { description: 'Fund not found' },
-          400: { description: 'Invalid input' },
         },
       },
     },
@@ -240,14 +199,8 @@ export const swaggerDocument = {
             content: {
               'application/json': {
                 schema: {
-                  type: 'object',
-                  properties: {
-                    success: { type: 'boolean', example: true },
-                    data: {
-                      type: 'array',
-                      items: { '$ref': '#/components/schemas/Investor' },
-                    },
-                  },
+                  type: 'array',
+                  items: { '$ref': '#/components/schemas/Investor' },
                 },
               },
             },
@@ -270,13 +223,7 @@ export const swaggerDocument = {
             description: 'Investor created',
             content: {
               'application/json': {
-                schema: {
-                  type: 'object',
-                  properties: {
-                    success: { type: 'boolean', example: true },
-                    data: { '$ref': '#/components/schemas/Investor' },
-                  },
-                },
+                schema: { '$ref': '#/components/schemas/Investor' },
               },
             },
           },
@@ -303,14 +250,8 @@ export const swaggerDocument = {
             content: {
               'application/json': {
                 schema: {
-                  type: 'object',
-                  properties: {
-                    success: { type: 'boolean', example: true },
-                    data: {
-                      type: 'array',
-                      items: { '$ref': '#/components/schemas/Investment' },
-                    },
-                  },
+                  type: 'array',
+                  items: { '$ref': '#/components/schemas/Investment' },
                 },
               },
             },
@@ -342,13 +283,7 @@ export const swaggerDocument = {
             description: 'Investment created',
             content: {
               'application/json': {
-                schema: {
-                  type: 'object',
-                  properties: {
-                    success: { type: 'boolean', example: true },
-                    data: { '$ref': '#/components/schemas/Investment' },
-                  },
-                },
+                schema: { '$ref': '#/components/schemas/Investment' },
               },
             },
           },
@@ -384,7 +319,15 @@ export const swaggerDocument = {
       },
       UpdateFund: {
         type: 'object',
+        required: ['id'],
+        anyOf: [
+          { required: ['name'] },
+          { required: ['vintage_year'] },
+          { required: ['target_size_usd'] },
+          { required: ['status'] },
+        ],
         properties: {
+          id: { type: 'string', format: 'uuid', example: '550e8400-e29b-41d4-a716-446655440000' },
           name: { type: 'string', example: 'Titanbay Growth Fund I' },
           vintage_year: { type: 'integer', example: 2024 },
           target_size_usd: { type: 'number', example: 300000000.00 },
