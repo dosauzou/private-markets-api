@@ -20,7 +20,7 @@ export const UpdateFundSchema = z.object({
     body.vintage_year !== undefined ||
     body.target_size_usd !== undefined ||
     body.status !== undefined,
-  { message: 'At least one field must be provided for update' },
+  { message: 'At least one field must be provided for update', path: ['body'] },
 )
 
 export const FundListQuerySchema = z.object({
