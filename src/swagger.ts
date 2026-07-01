@@ -318,6 +318,12 @@ export const swaggerDocument = {
       UpdateFund: {
         type: 'object',
         required: ['id'],
+        anyOf: [
+          { required: ['name'] },
+          { required: ['vintage_year'] },
+          { required: ['target_size_usd'] },
+          { required: ['status'] },
+        ],
         properties: {
           id: { type: 'string', format: 'uuid', example: '550e8400-e29b-41d4-a716-446655440000' },
           name: { type: 'string', example: 'Titanbay Growth Fund I' },
